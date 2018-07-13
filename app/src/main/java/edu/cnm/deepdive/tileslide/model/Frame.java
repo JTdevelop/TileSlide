@@ -61,8 +61,10 @@ public class Frame {
         && tiles[toRow][toCol] == null
     ) {
       swap(tiles, fromRow, fromCol, toRow, toCol);
+      ++moves;
       return true;
     }
+    System.out.println("You can't move there");
     return false;
   }
 
@@ -111,6 +113,7 @@ public class Frame {
         }
       }
     }
+
     for (int fromRow = 0; fromRow < size; fromRow++) {
       for (int fromCol = 0; fromCol < size; fromCol++) {
         int fromPosition = fromRow * size + fromCol;
