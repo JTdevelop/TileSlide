@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     // TODO Implement tile sliding by responding to clicks, and invoking any
     // relevant methods in the Frame class.
+    boolean move;
   }
 
   private void createPuzzle() {
