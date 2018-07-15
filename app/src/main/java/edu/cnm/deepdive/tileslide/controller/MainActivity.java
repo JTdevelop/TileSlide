@@ -13,7 +13,8 @@ import edu.cnm.deepdive.tileslide.model.Frame;
 import edu.cnm.deepdive.tileslide.view.FrameAdapter;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
   private static int PUZZLE_SIZE = 3;
 
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
   private FrameAdapter adapter;
   private GridView tileGrid;
   private Button reset;
-  private Button shuffle;
+  private Button newGame;
   private Toast toast;
 
   @Override
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     tileGrid = findViewById(R.id.tile_grid);
     tileGrid.setNumColumns(PUZZLE_SIZE);
     tileGrid.setOnItemClickListener(this);
+    newGame = findViewById(R.id.new_game);
     reset = findViewById(R.id.reset);
     toast = new Toast(this);
     if (savedInstanceState != null) {
@@ -47,11 +49,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
       public void onClick(View v) {
         frame.reset();
         adapter.notifyDataSetChanged();
-        createPuzzle();
       }
     });
-    shuffle = findViewById(R.id.shuffle);
-    shuffle.setOnClickListener(new OnClickListener() {
+    newGame.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         createPuzzle();
@@ -59,21 +59,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     });
   }
 
-  // This is where the puzzle pieces are moved.
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     if (frame.getWin()) {
-      Toast.makeText(this, "You won already.", Toast.LENGTH_SHORT).show();
+      Toast.makeText(this, "You already won.", Toast.LENGTH_SHORT).show();
     } else {
       frame.move(position / PUZZLE_SIZE, position % PUZZLE_SIZE);
       adapter.notifyDataSetChanged();
       if (frame.getWin()) {
-        Toast.makeText(this, "You win!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "You won!", Toast.LENGTH_SHORT).show();
       }
     }
   }
 
-  // This is where the puzzle object is created
   private void createPuzzle() {
     frame = new Frame(PUZZLE_SIZE, new Random());
     adapter = new FrameAdapter(this, frame);
@@ -87,9 +85,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     savedInstanceState.putIntArray("startOrder", frame.getStartOrder());
     savedInstanceState.putInt("moves", frame.getMoves());
   }
-
 }
-
 
 
 

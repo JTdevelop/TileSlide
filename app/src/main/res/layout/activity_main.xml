@@ -36,8 +36,8 @@
     app:layout_constraintRight_toRightOf="parent"/>
 
   <Button
-    android:id="@+id/shuffle"
-    android:text="Mix It Up"
+    android:id="@+id/new_game"
+    android:text="New Game"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
