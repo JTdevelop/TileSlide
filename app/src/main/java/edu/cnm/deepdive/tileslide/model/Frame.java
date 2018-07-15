@@ -1,5 +1,9 @@
 package edu.cnm.deepdive.tileslide.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class Frame {
@@ -9,6 +13,23 @@ public class Frame {
   private Tile[][] start;
   private Tile[][] tiles;
   private int moves;
+  private boolean win = false;
+  private int[] tilesOrder;
+  private int[] startOrder;
+  private List<Integer[]> path = new ArrayList<>();
+  private int distance;
+  private int lastMove;
+
+  private static final Map<String, String> DIRECTIONS = new HashMap(){{
+    put("LEFT", "left");
+    put("RIGHT", "right");
+    put("UP", "up");
+    put("DOWN", "down");
+  }};
+
+  public boolean getWin() {
+    return win;
+  }
 
   public Frame(int size, Random rng) {
     this.size = size;
@@ -19,12 +40,32 @@ public class Frame {
       tiles[i / size][i % size] = new Tile(i);
     }
     tiles[size - 1][size - 1] = null;
+    start[size-1][size-1] = null;
+    tilesOrder = new int[size * size];
+    startOrder = new int[size * size];
     scramble();
   }
 
   public void reset() {
     copy(start, tiles);
     moves = 0;
+  }
+
+  public boolean isWin() {
+    int previous = -1;
+    for (Tile[] tile : tiles) {
+      for (Tile tile1: tile) {
+        if (tile1 == null) {
+          previous++;
+          continue;
+        }
+        if (previous >= tile1.getNumber()) {
+          return false;
+        }
+        previous++;
+      }
+    }
+    return true;
   }
 
   public void scramble() {
@@ -49,6 +90,34 @@ public class Frame {
         || move(row, col, row, col + 1)
         || move(row, col, row + 1, col)
         || move(row, col, row, col - 1);
+  }
+
+  private int[] getBlankSpacePosition() {
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+        if (tiles[i][j] == null) {
+          return new int[] {i, j};
+        }
+      }
+    }
+    return new int[] {0, 0};
+  };
+
+  private boolean isMove (int row, int col) {
+    return isMove(row, col, row - 1, col)
+        || isMove(row, col, row, col + 1)
+        || isMove(row, col, row + 1, col)
+        || isMove(row, col, row, col - 1);
+  }
+
+  private boolean isMove(int fromRow, int fromCol, int toRow, int toCol) {
+    return !win &&
+        tiles[fromRow][fromCol] != null
+        && toRow >= 0
+        && toRow < size
+        && toCol >= 0
+        && toCol < size
+        && tiles[toRow][toCol] == null;
   }
 
   private boolean move(int fromRow, int fromCol, int toRow, int toCol) {
@@ -153,6 +222,51 @@ public class Frame {
     Tile temp = tiles[toRow][toCol];
     tiles[toRow][toCol] = tiles[fromRow][fromCol];
     tiles[fromRow][fromCol] = temp;
+  }
+
+  public int[] getTilesOrder() {
+    return getOrder(tiles, tilesOrder);
+  }
+
+  public void setTilesOrder(int[] order) {
+    setOrder(tiles, order);
+  }
+
+  public int[] getStartOrder() {
+    return getOrder(start, startOrder);
+  }
+
+  public void setStartOrder(int[] order) {
+    setOrder(start, order);
+  }
+
+  private int[] getOrder(Tile[][] tiles, int[] order) {
+    int count = 0;
+    for (Tile[] tile : tiles) {
+      for (Tile tile1 : tile) {
+        if (tile1 == null) {
+          order[count] = size * size - 1;
+        } else {
+          order[count] = tile1.getNumber();
+        }
+        count++;
+      }
+    }
+    return order;
+  }
+
+  public void setOrder(Tile[][] tiles, int[] order) {
+    for (int i = 0; i < order.length; i++) {
+      if (order[i] == size * size - 1) {
+        tiles[i / size][i % size] = null;
+      } else {
+        tiles[i / size][i % size] = new Tile(order[i]);
+      }
+    }
+  }
+
+  public void setMoves(int moves) {
+    this.moves = moves;
   }
 
 }

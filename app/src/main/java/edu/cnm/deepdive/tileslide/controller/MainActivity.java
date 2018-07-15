@@ -7,6 +7,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Toast;
 import edu.cnm.deepdive.tileslide.R;
 import edu.cnm.deepdive.tileslide.model.Frame;
 import edu.cnm.deepdive.tileslide.view.FrameAdapter;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
   private GridView tileGrid;
   private Button reset;
   private Button shuffle;
+  private Toast toast;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +31,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     tileGrid = findViewById(R.id.tile_grid);
     tileGrid.setNumColumns(PUZZLE_SIZE);
     tileGrid.setOnItemClickListener(this);
-    createPuzzle();
     reset = findViewById(R.id.reset);
+    toast = new Toast(this);
+    if (savedInstanceState != null) {
+      createPuzzle();
+      frame.setTilesOrder(savedInstanceState.getIntArray("tilesOrder"));
+      frame.setStartOrder(savedInstanceState.getIntArray("startOrder"));
+      frame.setMoves(savedInstanceState.getInt("moves"));
+      adapter.notifyDataSetChanged();
+    } else {
+      createPuzzle();
+    }
     reset.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        frame.reset();
+        adapter.notifyDataSetChanged();
         createPuzzle();
       }
     });
@@ -49,8 +62,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
   // This is where the puzzle pieces are moved.
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    frame.move(position / PUZZLE_SIZE, position % PUZZLE_SIZE);
-    adapter.notifyDataSetChanged();
+    if (frame.getWin()) {
+      Toast.makeText(this, "You won already.", Toast.LENGTH_SHORT).show();
+    } else {
+      frame.move(position / PUZZLE_SIZE, position % PUZZLE_SIZE);
+      adapter.notifyDataSetChanged();
+      if (frame.getWin()) {
+        Toast.makeText(this, "You win!", Toast.LENGTH_SHORT).show();
+      }
+    }
   }
 
   // This is where the puzzle object is created
@@ -58,6 +78,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     frame = new Frame(PUZZLE_SIZE, new Random());
     adapter = new FrameAdapter(this, frame);
     tileGrid.setAdapter(adapter);
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle savedInstanceState) {
+    super.onSaveInstanceState(savedInstanceState);
+    savedInstanceState.putIntArray("tilesOrder", frame.getTilesOrder());
+    savedInstanceState.putIntArray("startOrder", frame.getStartOrder());
+    savedInstanceState.putInt("moves", frame.getMoves());
   }
 
 }
