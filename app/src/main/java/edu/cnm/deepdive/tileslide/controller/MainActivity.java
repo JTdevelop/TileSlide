@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-  private static int PUZZLE_SIZE = 3;
+  private static int PUZZLE_SIZE = 4;
 
   private Frame frame;
   private FrameAdapter adapter;
