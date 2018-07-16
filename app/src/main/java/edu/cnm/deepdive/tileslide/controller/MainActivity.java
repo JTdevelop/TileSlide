@@ -14,7 +14,7 @@ import edu.cnm.deepdive.tileslide.view.FrameAdapter;
 import java.util.Random;
 
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
   private static int PUZZLE_SIZE = 3;
 
