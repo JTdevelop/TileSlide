@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
       public void onClick(View v) {
         createPuzzle();
       }
+
     });
   }
 
