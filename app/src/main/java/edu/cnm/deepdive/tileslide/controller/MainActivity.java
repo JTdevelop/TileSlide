@@ -1,5 +1,8 @@
 package edu.cnm.deepdive.tileslide.controller;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
 import edu.cnm.deepdive.tileslide.R;
 import edu.cnm.deepdive.tileslide.model.Frame;
@@ -17,6 +21,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
   private static int PUZZLE_SIZE = 4;
+  private static final int PICK_IMAGE = 100;
 
   private Frame frame;
   private FrameAdapter adapter;
@@ -24,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
   private Button reset;
   private Button newGame;
   private Toast toast;
+  ImageView imageView;
+  Uri imageUri;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     tileGrid.setNumColumns(PUZZLE_SIZE);
     tileGrid.setOnItemClickListener(this);
     newGame = findViewById(R.id.new_game);
+    imageView = (ImageView)findViewById(R.id.tile_image);
     reset = findViewById(R.id.reset);
     toast = new Toast(this);
     if (savedInstanceState != null) {
@@ -54,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     newGame.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        openGallery();
         createPuzzle();
       }
 
@@ -85,6 +94,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     savedInstanceState.putIntArray("tilesOrder", frame.getTilesOrder());
     savedInstanceState.putIntArray("startOrder", frame.getStartOrder());
     savedInstanceState.putInt("moves", frame.getMoves());
+  }
+
+  private void openGallery() {
+    Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+    startActivityForResult(gallery, PICK_IMAGE);
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if(resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
+      imageUri = data.getData();
+      imageView.setImageURI(imageUri);
+    }
   }
 }
 
