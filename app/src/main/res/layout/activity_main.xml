@@ -41,12 +41,28 @@
 
   <Button
     android:id="@+id/new_game"
-    android:layout_width="201dp"
-    android:layout_height="56dp"
+    android:layout_width="146dp"
+    android:layout_height="46dp"
     android:layout_marginBottom="8dp"
+    android:layout_marginLeft="16dp"
     android:text="new"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.146"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toLeftOf="@+id/hint"
+    app:layout_constraintStart_toStartOf="parent"/>
+
+  <Button
+    android:id="@+id/hint"
+    android:layout_width="130dp"
+    android:layout_height="53dp"
+    android:layout_marginBottom="8dp"
+    android:text="hint"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintLeft_toRightOf="@id/new_game"
+    app:layout_constraintHorizontal_bias="0.834"
     app:layout_constraintStart_toStartOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>
